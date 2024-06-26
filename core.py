@@ -15,7 +15,8 @@ from llama_index.core import Settings
 from llama_index.core.node_parser import SentenceSplitter
 import fitz
 from docx import Document as DocxDocument
-
+import os
+os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 import logging
 logging.basicConfig(level=logging.INFO)
 
@@ -28,18 +29,6 @@ logging.basicConfig(level=logging.INFO)
 #                    generate_kwargs={"temperature": TEMPERATURE},
 #                    device_map=DEVICE)
 #embedding = OllamaEmbedding(model_name="nomic-embed-text:latest")
-
-from llama_index.core import set_global_tokenizer
-from transformers import AutoTokenizer
-
-def set_global_tokenizer_eos_padding(model_name):
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    tokenizer.pad_token = tokenizer.eos_token
-    set_global_tokenizer(tokenizer.encode)
-
-# Example usage:
-model_name = MODEL_NAME
-set_global_tokenizer_eos_padding(model_name)
 
 # Configuration settings
 llm = HuggingFaceLLM(model_name=MODEL_NAME,
