@@ -29,9 +29,20 @@ logging.basicConfig(level=logging.INFO)
 #                    device_map=DEVICE)
 #embedding = OllamaEmbedding(model_name="nomic-embed-text:latest")
 
+from llama_index.core import set_global_tokenizer
+from transformers import AutoTokenizer
+
+def set_global_tokenizer_eos_padding(model_name):
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer.pad_token = tokenizer.eos_token
+    set_global_tokenizer(tokenizer.encode)
+
+# Example usage:
+model_name = MODEL_NAME
+set_global_tokenizer_eos_padding(model_name)
+
 # Configuration settings
-llm = HuggingFaceLLM(model_name=MODEL_NAME, 
-                      tokenizer_name=MODEL_NAME, 
+llm = HuggingFaceLLM(model_name=MODEL_NAME,
                       system_prompt=SYSTEM_PROMPT, 
                       context_window=CONTEXT_WINDOW,
                       generate_kwargs={"temperature": TEMPERATURE},
