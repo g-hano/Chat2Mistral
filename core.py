@@ -1,3 +1,5 @@
+
+
 from HybridRetriever import HybridRetriever
 from ChatEngine import ChatEngine
 from configs import *
@@ -9,38 +11,25 @@ warnings.simplefilter("ignore", FutureWarning)
 from llama_index.retrievers.bm25 import BM25Retriever 
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core import VectorStoreIndex, Document
-from llama_index.llms.huggingface import HuggingFaceLLM
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core import Settings
 from llama_index.core.node_parser import SentenceSplitter
 import fitz
 from docx import Document as DocxDocument
-import os
-os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-os.environ['TORCH_USE_CUDA_DSA'] = '1'
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
-#from llama_index.llms.ollama import Ollama
-#from llama_index.embeddings.ollama import OllamaEmbedding
-#llm = Ollama(model="mistral", 
-#                    tokenizer_name=MODEL_NAME, 
-#                    system_prompt=SYSTEM_PROMPT, 
-#                    context_window=CONTEXT_WINDOW,
-#                    generate_kwargs={"temperature": TEMPERATURE},
-#                    device_map=DEVICE)
-#embedding = OllamaEmbedding(model_name="nomic-embed-text:latest")
+from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline
+from langchain_community.embeddings.huggingface import HuggingFaceEmbeddings 
 
-# Configuration settings
-llm = HuggingFaceLLM(model_name=MODEL_NAME,
-                      system_prompt=SYSTEM_PROMPT, 
-                      context_window=CONTEXT_WINDOW,
-                      generate_kwargs={"temperature": TEMPERATURE},
-                      device_map=DEVICE)
-embedding = HuggingFaceEmbedding(model_name=EMBEDDING_NAME, 
-                                 device=DEVICE, 
-                                 trust_remote_code=True) 
+pipe = HuggingFacePipeline(model_id=MODEL_NAME, verbose=True)
+llm = ChatHuggingFace(llm=pipe)
+
+embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME,
+                                  model_kwargs={"device":"cuda"},
+                                  multi_process=True,
+                                  )
+
 
 logging.info("Initializing LLM and embedding models")
 Settings.llm = llm
