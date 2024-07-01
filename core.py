@@ -25,7 +25,7 @@ from langchain_community.embeddings.huggingface import HuggingFaceEmbeddings
 pipe = HuggingFacePipeline.from_model_id(
                            model_id=MODEL_NAME, 
                            device_map=DEVICE,
-                           task="summarization")
+                           task="text-generation")
 llm = ChatHuggingFace(llm=pipe)
 
 embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME,
