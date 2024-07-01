@@ -19,11 +19,11 @@ from docx import Document as DocxDocument
 import logging
 logging.basicConfig(level=logging.INFO)
 
-from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline
-from langchain_community.embeddings.huggingface import HuggingFaceEmbeddings 
+from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline, HuggingFaceEmbeddings
 
 pipe = HuggingFacePipeline.from_model_id(
-                           model_id=MODEL_NAME, 
+                           model_id=MODEL_NAME,
+                           device=running_on,
                            device_map=DEVICE,
                            task="text-generation")
 llm = ChatHuggingFace(llm=pipe)
