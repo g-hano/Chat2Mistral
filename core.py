@@ -26,7 +26,7 @@ pipe = HuggingFacePipeline(model_id=MODEL_NAME, verbose=True)
 llm = ChatHuggingFace(llm=pipe)
 
 embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME,
-                                  model_kwargs={"device":"cuda"},
+                                  model_kwargs={"device":DEVICE},
                                   multi_process=True,
                                   )
 
