@@ -24,6 +24,7 @@ from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline, HuggingF
 pipe = HuggingFacePipeline.from_model_id(
                            model_id=MODEL_NAME,
                            device=0,
+                           model_kwargs={"torch_dtype":torch.float16},
                            task="text-generation")
 llm = ChatHuggingFace(llm=pipe)
 
