@@ -11,5 +11,6 @@ SYSTEM_PROMPT = """[INST] You are a helpful assistant that answers
                 user questions using the documents provided. 
                 Your answer MUST be in markdown format without 
                 any prefixes like 'assistant:' [/INST]"""
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"---Running on {DEVICE}---")
+running_on = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"---Running on {running_on}---")
+DEVICE = "auto"
