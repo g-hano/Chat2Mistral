@@ -23,7 +23,7 @@ from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline, HuggingF
 
 pipe = HuggingFacePipeline.from_model_id(
                            model_id=MODEL_NAME,
-                           device_map="auto",
+                           device_map="cuda:0",
                            task="text-generation")
 llm = ChatHuggingFace(llm=pipe)
 
