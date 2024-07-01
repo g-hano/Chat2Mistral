@@ -22,7 +22,9 @@ logging.basicConfig(level=logging.INFO)
 from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline
 from langchain_community.embeddings.huggingface import HuggingFaceEmbeddings 
 
-pipe = HuggingFacePipeline(model_id=MODEL_NAME, verbose=True)
+pipe = HuggingFacePipeline(model_id=MODEL_NAME, 
+                           device_map=DEVICE,
+                           verbose=True)
 llm = ChatHuggingFace(llm=pipe)
 
 embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME,
