@@ -55,10 +55,10 @@ if __name__ == '__main__':
             return jsonify({'response': response})
 
     logging.info("Starting Flask app")
-    engine = LLM(model=MODEL_NAME, dtype="half", tensor_parallel_size=4, gpu_memory_utilization=0.7)
+    llm = LLM(model=MODEL_NAME, dtype="half", tensor_parallel_size=4, gpu_memory_utilization=0.4)
 
     # Load model with vLLM
-    llm = ChatHuggingFace(llm=engine)
+    
     
     embedding = HuggingFaceEmbeddings(
         model_name=MODEL_NAME,
