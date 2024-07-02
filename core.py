@@ -23,7 +23,7 @@ from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline, HuggingF
 from vllm import LLM
 import torch
 
-engine = LLM(model=MODEL_NAME, dtype="float16")
+engine = LLM(model=MODEL_NAME, dtype="float16", tensor_parallel_size=4)
 
 # Load model with vLLM
 llm = ChatHuggingFace(llm=engine)
