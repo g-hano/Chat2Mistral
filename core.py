@@ -20,9 +20,11 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline, HuggingFaceEmbeddings
-from vllm import LLMEngine, Config
+from vllm import LLMEngine
 import torch
-config = Config(model=MODEL_NAME, num_gpus=4, torch_dtype="float16")
+config = {
+    "model":MODEL_NAME, "num_gpus":4, "torch_dtype":"float16"
+}
 engine = LLMEngine(config)
 
 # Load model with vLLM
