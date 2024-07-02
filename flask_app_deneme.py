@@ -7,6 +7,7 @@ from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline, HuggingF
 from vllm import LLM
 import logging
 from llama_index.core import Settings
+from configs import *
 
 if __name__ == '__main__':
     app = Flask(__name__)
