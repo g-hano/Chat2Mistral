@@ -40,7 +40,7 @@ class DistributedHuggingFaceEmbeddings(HuggingFaceEmbeddings):
         # Check if multiple GPUs are available and use DataParallel
         if torch.cuda.device_count() > 1:
             self.model = torch.nn.DataParallel(self.model)
-        self.model.to('cuda')
+        self.model.to('cuda:1')
 
     def embed_documents(self, texts):
         inputs = self.tokenizer(texts, return_tensors='pt', padding=True, truncation=True)
@@ -53,7 +53,7 @@ class DistributedHuggingFaceEmbeddings(HuggingFaceEmbeddings):
 # Instantiate distributed embeddings
 embedding = DistributedHuggingFaceEmbeddings(
     model_name=MODEL_NAME,
-    model_kwargs={"device":"cuda"},
+    model_kwargs={"device":"cuda:1"},
     multi_process=True
 )
 
