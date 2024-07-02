@@ -44,7 +44,7 @@ class DistributedHuggingFaceEmbeddings(HuggingFaceEmbeddings):
 
     def embed_documents(self, texts):
         inputs = self.tokenizer(texts, return_tensors='pt', padding=True, truncation=True)
-        inputs = {key: value.to('cuda') for key, value in inputs.items()}
+        inputs = {key: value.to('cuda:1') for key, value in inputs.items()}
         with torch.no_grad():
             outputs = self.model(**inputs)
             embeddings = outputs.last_hidden_state.mean(dim=1)
