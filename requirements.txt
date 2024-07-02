@@ -8,7 +8,6 @@ langchain-community
 protobuf
 docx2txt==0.8
 httpx==0.27.0
-gradio==4.36.1
 sentencepiece==0.2.0
 einops
 PyMuPDF==1.21.0
