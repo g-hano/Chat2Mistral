@@ -55,7 +55,7 @@ if __name__ == '__main__':
             return jsonify({'response': response})
 
     logging.info("Starting Flask app")
-    llm = LLM(model=MODEL_NAME, dtype="half", tensor_parallel_size=4, gpu_memory_utilization=0.4)
+    llm = LLM(model=MODEL_NAME, dtype="half", tensor_parallel_size=4, gpu_memory_utilization=0.2)
 
     # Load model with vLLM
     
