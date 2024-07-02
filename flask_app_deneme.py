@@ -55,7 +55,7 @@ if __name__ == '__main__':
             return jsonify({'response': response})
 
     logging.info("Starting Flask app")
-    engine = LLM(model=MODEL_NAME, dtype="float16", tensor_parallel_size=4)
+    engine = LLM(model=MODEL_NAME, dtype="bfloat16", tensor_parallel_size=4)
 
     # Load model with vLLM
     llm = ChatHuggingFace(llm=engine)
