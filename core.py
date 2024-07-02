@@ -19,24 +19,6 @@ from docx import Document as DocxDocument
 import logging
 logging.basicConfig(level=logging.INFO)
 
-from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline, HuggingFaceEmbeddings
-from vllm import LLM
-import torch
-
-engine = LLM(model=MODEL_NAME, dtype="float16", tensor_parallel_size=4)
-
-# Load model with vLLM
-llm = ChatHuggingFace(llm=engine)
-
-embedding = HuggingFaceEmbeddings(
-    model_name=MODEL_NAME,
-    model_kwargs={"device": "cuda:1"},
-    multi_process=True,
-)
-
-logging.info("Initializing LLM and embedding models")
-Settings.llm = llm
-Settings.embed_model = embedding
 
 def process_file(file):
     logging.info(f"Processing file: {file}")
@@ -72,7 +54,6 @@ def process_file(file):
     return [Document(text=text)]
 
 def process_and_respond(file, question):
-    global llm
     logging.info(f"Starting to process file: {file}")
     documents = process_file(file)
     
