@@ -21,18 +21,41 @@ logging.basicConfig(level=logging.INFO)
 
 from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline, HuggingFaceEmbeddings
 
+import torch
 pipe = HuggingFacePipeline.from_model_id(
-                           model_id=MODEL_NAME,
-                           device=0,
-                           model_kwargs={"torch_dtype":torch.float16},
-                           task="text-generation")
+    model_id=MODEL_NAME,
+    device=0,
+    model_kwargs={"torch_dtype": torch.float16},
+    task="text-generation"
+)
 llm = ChatHuggingFace(llm=pipe)
 
-embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME,
-                                  model_kwargs={"device":"cuda:1"},
-                                  multi_process=True,
-                                  )
+from transformers import AutoModel, AutoTokenizer
+class DistributedHuggingFaceEmbeddings(HuggingFaceEmbeddings):
+    def __init__(self, model_name, model_kwargs=None, multi_process=False, **kwargs):
+        super().__init__(model_name=model_name, model_kwargs=model_kwargs, multi_process=multi_process)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModel.from_pretrained(model_name, **model_kwargs if model_kwargs else {})
+     
+        # Check if multiple GPUs are available and use DataParallel
+        if torch.cuda.device_count() > 1:
+            self.model = torch.nn.DataParallel(self.model)
+        self.model.to('cuda')
 
+    def embed_documents(self, texts):
+        inputs = self.tokenizer(texts, return_tensors='pt', padding=True, truncation=True)
+        inputs = {key: value.to('cuda') for key, value in inputs.items()}
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+            embeddings = outputs.last_hidden_state.mean(dim=1)
+        return embeddings
+
+# Instantiate distributed embeddings
+embedding = DistributedHuggingFaceEmbeddings(
+    model_name=MODEL_NAME,
+    model_kwargs={"device":"cuda"},
+    multi_process=True
+)
 
 logging.info("Initializing LLM and embedding models")
 Settings.llm = llm
