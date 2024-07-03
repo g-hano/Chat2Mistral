@@ -76,7 +76,7 @@ if __name__ == '__main__':
         )   
     embedding = HuggingFaceEmbedding(
         model_name=EMBEDDING_NAME,
-        device=DEVICE,
+        device="cuda:2",
         trust_remote_code=True,
     )
     
