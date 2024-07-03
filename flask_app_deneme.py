@@ -3,8 +3,6 @@ from werkzeug.utils import secure_filename
 import os
 import logging
 from core import process_and_respond
-from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline, HuggingFaceEmbeddings
-from vllm import LLM
 import logging
 from llama_index.core import Settings
 from configs import *
@@ -13,6 +11,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import BitsAndBytesConfig
 import torch
 from llama_index.llms.huggingface import HuggingFaceLLM
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 if __name__ == '__main__':
     app = Flask(__name__)
@@ -75,10 +74,10 @@ if __name__ == '__main__':
             generate_kwargs={"temperature": TEMPERATURE},
             device_map=DEVICE,
         )   
-    embedding = HuggingFaceEmbeddings(
+    embedding = HuggingFaceEmbedding(
         model_name=EMBEDDING_NAME,
-        model_kwargs={"device": "cuda:1", "trust_remote_code":True},
-        multi_process=True,
+        device=DEVICE,
+        trust_remote_code=True,
     )
     
     logging.info("Initializing LLM and embedding models")
