@@ -61,7 +61,7 @@ if __name__ == '__main__':
     
     
     embedding = HuggingFaceEmbeddings(
-        model_name=MODEL_NAME,
+        model_name=EMBEDDING_NAME,
         model_kwargs={"device": "cuda:1"},
         multi_process=True,
     )
