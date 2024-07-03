@@ -25,17 +25,17 @@ import torch
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
-        )
+#quantization_config = BitsAndBytesConfig(
+#        load_in_4bit=True,
+#        bnb_4bit_compute_dtype=torch.float16,
+#        bnb_4bit_quant_type="nf4",
+#        bnb_4bit_use_double_quant=True,
+#        )
 llm = HuggingFaceLLM(
         model_name=MODEL_NAME,
         tokenizer_name=MODEL_NAME,
         context_window=CONTEXT_WINDOW,
-        model_kwargs={"quantization_config": quantization_config},
+        #model_kwargs={"quantization_config": quantization_config},
         generate_kwargs={"temperature": TEMPERATURE},
         device_map=DEVICE,
         )   
