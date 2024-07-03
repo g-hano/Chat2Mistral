@@ -9,6 +9,11 @@ import logging
 from llama_index.core import Settings
 from configs import *
 
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import BitsAndBytesConfig
+import torch
+from llama_index.llms.huggingface import HuggingFaceLLM
+
 if __name__ == '__main__':
     app = Flask(__name__)
     app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -55,14 +60,24 @@ if __name__ == '__main__':
             return jsonify({'response': response})
 
     logging.info("Starting Flask app")
-    llm = LLM(model=MODEL_NAME, dtype="half", tensor_parallel_size=4, gpu_memory_utilization=1.0)
 
-    # Load model with vLLM
-    
-    
+    quantization_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_compute_dtype=torch.float16,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_use_double_quant=True,
+        )
+    llm = HuggingFaceLLM(
+            model_name=MODEL_NAME,
+            tokenizer_name=MODEL_NAME,
+            context_window=CONTEXT_WINDOW,
+            model_kwargs={"quantization_config": quantization_config},
+            generate_kwargs={"temperature": TEMPERATURE},
+            device_map=DEVICE,
+        )   
     embedding = HuggingFaceEmbeddings(
         model_name=EMBEDDING_NAME,
-        model_kwargs={"device": "cuda:1"},
+        model_kwargs={"device": "DEVICE"},
         multi_process=True,
     )
     
