@@ -77,9 +77,8 @@ if __name__ == '__main__':
         )   
     embedding = HuggingFaceEmbeddings(
         model_name=EMBEDDING_NAME,
-        model_kwargs={"device": "DEVICE"},
+        model_kwargs={"device": DEVICE, "trust_remote_code":True},
         multi_process=True,
-        trust_remote_code=True
     )
     
     logging.info("Initializing LLM and embedding models")
