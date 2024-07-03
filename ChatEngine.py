@@ -1,4 +1,6 @@
 from llama_index.core.base.llms.types import ChatMessage, MessageRole
+import logging
+logging.basicConfig(level=logging.INFO)
 
 class ChatEngine:
     def __init__(self, retriever):
@@ -30,11 +32,12 @@ class ChatEngine:
         
         results = self.retriever.best_docs(question)
         document = [doc.text for doc, sc in results]
-
+        logging.info("Created Document")
         self.chat_history.append(ChatMessage(role=MessageRole.USER, content=f"Question: {question}"))
         
         self.chat_history.append(ChatMessage(role=MessageRole.ASSISTANT, content=f"Document: {document}"))
-
+        logging.info("Created Chat History")
+        logging.info("Asking LLM")
         response = llm.chat(self.chat_history)
-     
+        logging.info("Got Response from LLM, Returning")
         return response.message.content
