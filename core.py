@@ -8,6 +8,9 @@ import warnings
 warnings.simplefilter("ignore", UserWarning)
 warnings.simplefilter("ignore", FutureWarning)
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 from llama_index.retrievers.bm25 import BM25Retriever 
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core import VectorStoreIndex, Document
@@ -16,9 +19,35 @@ from llama_index.core.node_parser import SentenceSplitter
 import fitz
 from docx import Document as DocxDocument
 
-import logging
-logging.basicConfig(level=logging.INFO)
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import BitsAndBytesConfig
+import torch
+from llama_index.llms.huggingface import HuggingFaceLLM
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
+quantization_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_compute_dtype=torch.float16,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_use_double_quant=True,
+        )
+llm = HuggingFaceLLM(
+        model_name=MODEL_NAME,
+        tokenizer_name=MODEL_NAME,
+        context_window=CONTEXT_WINDOW,
+        model_kwargs={"quantization_config": quantization_config},
+        generate_kwargs={"temperature": TEMPERATURE},
+        device_map=DEVICE,
+        )   
+embedding = HuggingFaceEmbedding(
+        model_name=EMBEDDING_NAME,
+        device="cuda:2",
+        trust_remote_code=True,
+        )
+
+logging.info("Initializing LLM and embedding models")
+Settings.llm = llm
+Settings.embed_model = embedding
 
 def process_file(file):
     logging.info(f"Processing file: {file}")
@@ -54,6 +83,7 @@ def process_file(file):
     return [Document(text=text)]
 
 def process_and_respond(file, question):
+    global llm
     logging.info(f"Starting to process file: {file}")
     documents = process_file(file)
     
