@@ -43,7 +43,7 @@ llm = deepspeed.init_inference(
     mp_size=4,        # Number of GPU
     dtype=torch.half, # dtype of the weights (fp16)
     # injection_policy={"BertLayer" : HFBertLayerPolicy}, # replace BertLayer with DS HFBertLayerPolicy
-    replace_method="auto", # Lets DS autmatically identify the layer to replace
+    #replace_method="auto", # Lets DS autmatically identify the layer to replace
     replace_with_kernel_inject=True, # replace the model with the kernel injector
     max_tokens=2048,
 )
