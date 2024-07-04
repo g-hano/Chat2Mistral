@@ -48,7 +48,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 #    max_tokens=2048,
 #)
 from vllm import LLM
-llm = LLM(MODEL_NAME, tensor_parallel_size=4)
+llm = LLM(MODEL_NAME, tensor_parallel_size=4, dtype="half")
 #llm = HuggingFaceLLM(
 #        model_name=MODEL_NAME,
 #        tokenizer_name=MODEL_NAME,
