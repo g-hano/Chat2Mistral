@@ -31,14 +31,31 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 #        bnb_4bit_quant_type="nf4",
 #        bnb_4bit_use_double_quant=True,
 #        )
-llm = HuggingFaceLLM(
-        model_name=MODEL_NAME,
-        tokenizer_name=MODEL_NAME,
-        context_window=CONTEXT_WINDOW,
-        #model_kwargs={"quantization_config": quantization_config},
-        generate_kwargs={"temperature": TEMPERATURE},
-        device_map=DEVICE,
-        )   
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import deepspeed
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForCausalLM.from_pretrained(MODEL_NAME, torch_dtype="auto", trust_remote_code=True)
+
+# init deepspeed inference engine
+llm = deepspeed.init_inference(
+    model=model,      # Transformers models
+    mp_size=4,        # Number of GPU
+    dtype=torch.half, # dtype of the weights (fp16)
+    # injection_policy={"BertLayer" : HFBertLayerPolicy}, # replace BertLayer with DS HFBertLayerPolicy
+    replace_method="auto", # Lets DS autmatically identify the layer to replace
+    replace_with_kernel_inject=True, # replace the model with the kernel injector
+    max_tokens=2048,
+)
+
+#llm = HuggingFaceLLM(
+#        model_name=MODEL_NAME,
+#        tokenizer_name=MODEL_NAME,
+#        context_window=CONTEXT_WINDOW,
+#        #model_kwargs={"quantization_config": quantization_config},
+#        generate_kwargs={"temperature": TEMPERATURE},
+#        device_map=DEVICE,
+#        )   
 embedding = HuggingFaceEmbedding(
         model_name=EMBEDDING_NAME,
         device="cuda:2",
