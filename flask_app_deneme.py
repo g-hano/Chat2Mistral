@@ -1,12 +1,7 @@
 from flask import Flask, request, render_template, jsonify
 from werkzeug.utils import secure_filename
 import os
-import logging
-from core import process_and_respond
-import logging
 from llama_index.core import Settings
-from configs import *
-
 from HybridRetriever import HybridRetriever
 from ChatEngine import ChatEngine
 from configs import *
@@ -32,6 +27,8 @@ import torch
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
+from vllm import LLM
+
 #quantization_config = BitsAndBytesConfig(
 #        load_in_4bit=True,
 #        bnb_4bit_compute_dtype=torch.float16,
@@ -54,7 +51,6 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 #    replace_with_kernel_inject=True, # replace the model with the kernel injector
 #    max_tokens=2048,
 #)
-from vllm import LLM
 
 #llm = HuggingFaceLLM(
 #        model_name=MODEL_NAME,
@@ -123,17 +119,6 @@ def process_and_respond(file, question):
 
 
 if __name__ == '__main__':
-    llm = LLM(MODEL_NAME, tensor_parallel_size=4, dtype="half")
-    embedding = HuggingFaceEmbedding(
-        model_name=EMBEDDING_NAME,
-        device="cuda:2",
-        trust_remote_code=True,
-        )
-    
-    logging.info("Initializing LLM and embedding models")
-    Settings.llm = llm
-    Settings.embed_model = embedding
-
     app = Flask(__name__)
     app.config['UPLOAD_FOLDER'] = 'uploads'
 
@@ -141,7 +126,18 @@ if __name__ == '__main__':
 
     # Setup logging
     logging.basicConfig(level=logging.INFO)
-
+    
+    llm = LLM(MODEL_NAME, tensor_parallel_size=4, dtype="half")
+    embedding = HuggingFaceEmbedding(
+        model_name=EMBEDDING_NAME,
+        device="cuda:2",
+        trust_remote_code=True,
+        )
+    
+    Settings.llm = llm
+    Settings.embed_model = embedding
+    logging.info("Initialized LLM and embedding models")
+    
     @app.route('/')
     def home():
         logging.info("Rendering home page")
