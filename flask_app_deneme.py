@@ -172,7 +172,7 @@ if __name__ == '__main__':
             os.remove(file_path)  # Clean up the uploaded file after processing
             logging.info(f"File {file_path} removed")
             
-            return {"response": response[0]["outputs"][0].text} 
+            return {"response": response[0].outputs[0].text} 
             #render_template('response.html', response=response) 
             #response #jsonify({'response': response})
 
