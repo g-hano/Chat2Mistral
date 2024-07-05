@@ -1,7 +1,8 @@
 from llama_index.core.base.llms.types import ChatMessage, MessageRole
 import logging
 logging.basicConfig(level=logging.INFO)
-from configs import SYSTEM_PROMPT
+from configs import SYSTEM_PROMPT, TEMPERATURE
+from vllm import SamplingParams
 
 class ChatEngine:
     def __init__(self, retriever):
@@ -16,7 +17,9 @@ class ChatEngine:
         """
 
         self.retriever = retriever
-
+        self.params = SamplingParams(temperature=TEMPERATURE, 
+                                     top_p=0.95, min_tokens=512)
+        
     def ask_question(self, question, llm):
         """
         Asks a question to the language model, using the retriever to fetch relevant documents.
@@ -38,6 +41,6 @@ class ChatEngine:
         logging.info("Created Chat History")
         logging.info("Asking LLM")
         #response = llm.chat(self.chat_history)
-        response = llm.generate(chat_history)
+        response = llm.generate(chat_history, self.params)
         logging.info("Got Response from LLM, Returning")
         return response[0].outputs[0].text #response.message.content
