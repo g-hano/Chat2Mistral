@@ -32,7 +32,7 @@ class ChatEngine:
         results = self.retriever.best_docs(question)
         document = [doc.text for doc, sc in results]
         logging.info(f"Created Document - len docs:{len(document)}")
-        chat_history = f"Question: {question}\n\nDocument: {document}")
+        chat_history = f"Question: {question}\n\nDocument: {document}"
         
         logging.info("Created Chat History")
         logging.info("Asking LLM")
