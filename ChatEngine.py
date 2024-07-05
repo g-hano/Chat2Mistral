@@ -33,9 +33,9 @@ class ChatEngine:
         results = self.retriever.best_docs(question)
         document = [doc.text for doc, sc in results]
         logging.info(f"Created Document - len docs:{len(document)}")
-        self.chat_history.append(ChatMessage(role=MessageRole.USER, content=f"Question: {question}"))
+        self.chat_history.append(f"Question: {question}")
         
-        self.chat_history.append(ChatMessage(role=MessageRole.ASSISTANT, content=f"Document: {document}"))
+        self.chat_history.append(f"\nDocument: {document}")
         logging.info("Created Chat History")
         logging.info("Asking LLM")
         #response = llm.chat(self.chat_history)
