@@ -1,6 +1,7 @@
 from llama_index.core.base.llms.types import ChatMessage, MessageRole
 import logging
 logging.basicConfig(level=logging.INFO)
+from configs import SYSTEM_PROMPT
 
 class ChatEngine:
     def __init__(self, retriever):
@@ -32,7 +33,7 @@ class ChatEngine:
         results = self.retriever.best_docs(question)
         document = [doc.text for doc, sc in results]
         logging.info(f"Created Document - len docs:{len(document)}")
-        chat_history = f"Question: {question}\n\nDocument: {document}"
+        chat_history = SYSTEM_PROMPT + "\n\n" + f"Question: {question}\n\nDocument: {document}"
         
         logging.info("Created Chat History")
         logging.info("Asking LLM")
