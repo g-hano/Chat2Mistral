@@ -29,7 +29,7 @@ class ChatEngine:
             question (str): The question to be asked.
 
         Returns:
-            str: The response from the language model in markdown format.
+            response (str): The response from the language model in markdown format.
         """
         
         question = "[INST]" + question + "[/INST]"
@@ -37,11 +37,12 @@ class ChatEngine:
         results = self.retriever.best_docs(question)
         document = [doc.text for doc, sc in results]
         logging.info(f"Created Document - len docs:{len(document)}")
-        chat_history = SYSTEM_PROMPT + "\n\n" + f"Question: {question}\n\nDocument: {document}"
         
+        chat_history = SYSTEM_PROMPT + "\n\n" + f"Question: {question}\n\nDocument: {document}"
         logging.info("Created Chat History")
+        
         logging.info("Asking LLM")
-        #response = llm.chat(self.chat_history)
         response = llm.generate(chat_history, self.params)
+        
         logging.info("Got Response from LLM, Returning")
-        return response[0].outputs[0].text #response.message.content
+        return response[0].outputs[0].text
