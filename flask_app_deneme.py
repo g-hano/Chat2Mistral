@@ -115,7 +115,7 @@ def process_and_respond(file, question):
     logging.info("Generating response")
     response = chat_engine.ask_question(question, llm)
     logging.info("Response generated")
-    logging.info(f"{response[0].outputs[0].text}")
+    logging.info(response)
     return response
 
 
