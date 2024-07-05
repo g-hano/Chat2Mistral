@@ -38,6 +38,7 @@ class ChatEngine:
         self.chat_history.append(ChatMessage(role=MessageRole.ASSISTANT, content=f"Document: {document}"))
         logging.info("Created Chat History")
         logging.info("Asking LLM")
-        response = llm.chat(self.chat_history)
+        #response = llm.chat(self.chat_history)
+        response = llm.generate(self.chat_history)
         logging.info("Got Response from LLM, Returning")
         return response.message.content
