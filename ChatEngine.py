@@ -15,7 +15,6 @@ class ChatEngine:
         """
 
         self.retriever = retriever
-        self.chat_history = []
 
     def ask_question(self, question, llm):
         """
@@ -33,12 +32,11 @@ class ChatEngine:
         results = self.retriever.best_docs(question)
         document = [doc.text for doc, sc in results]
         logging.info(f"Created Document - len docs:{len(document)}")
-        self.chat_history.append(f"Question: {question}")
+        chat_history = f"Question: {question}\n\nDocument: {document}")
         
-        self.chat_history.append(f"\nDocument: {document}")
         logging.info("Created Chat History")
         logging.info("Asking LLM")
         #response = llm.chat(self.chat_history)
-        response = llm.generate(self.chat_history)
+        response = llm.generate(chat_history)
         logging.info("Got Response from LLM, Returning")
         return response #response.message.content
