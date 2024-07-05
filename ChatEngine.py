@@ -41,4 +41,4 @@ class ChatEngine:
         #response = llm.chat(self.chat_history)
         response = llm.generate(self.chat_history)
         logging.info("Got Response from LLM, Returning")
-        return response.message.content
+        return response #response.message.content
