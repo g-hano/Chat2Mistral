@@ -4,6 +4,7 @@ logging.basicConfig(level=logging.INFO)
 
 MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.3"
 EMBEDDING_NAME = "nomic-ai/nomic-embed-text-v1.5"
+TEMPERATURE=0.0
 TOP_K = 5
 CHUNK_SIZE = 512
 CHUNK_OVERLAP = 10
