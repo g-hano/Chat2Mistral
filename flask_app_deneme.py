@@ -172,7 +172,9 @@ if __name__ == '__main__':
             os.remove(file_path)  # Clean up the uploaded file after processing
             logging.info(f"File {file_path} removed")
             
-            return render_template('response.html', response=response) #response #jsonify({'response': response})
+            return {"response": response} 
+            #render_template('response.html', response=response) 
+            #response #jsonify({'response': response})
 
     logging.info("Starting Flask app")
 
