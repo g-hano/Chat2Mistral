@@ -18,7 +18,8 @@ class ChatEngine:
 
         self.retriever = retriever
         self.params = SamplingParams(temperature=TEMPERATURE, 
-                                     top_p=0.95, min_tokens=512)
+                                     top_p=0.95, 
+                                     min_tokens=128, max_tokens=1024)
         
     def ask_question(self, question, llm):
         """
