@@ -24,6 +24,11 @@ cd Chat2Mistral
 pip install -r requirements.txt
 ```
 
+3. Run the flask app
+```bash
+python flask_app.py
+```
+
 ## Configuration
 
 The application configuration can be adjusted in the `configs` section of the code. Key configuration parameters include:
@@ -36,17 +41,7 @@ The application configuration can be adjusted in the `configs` section of the co
 - `CHUNK_SIZE`: The chunk size for document splitting.
 - `CHUNK_OVERLAP`: The overlap size between chunks.
 - `SYSTEM_PROMPT`: The system prompt provided to the language model.
-- `DEVICE`: The device to run the models on (`cpu` or `cuda`).
-
-## Usage
-
-### Running the Flask App
-
-Start the Flask app:
-
-```bash
-python flask_app.py
-```
+- `DEVICE`: The device to run the models on, default to (`auto`) for handling multi-gpus.
 
 ### ChatEngine Class
 
@@ -55,18 +50,16 @@ The `ChatEngine` class is responsible for handling the chat interactions with th
 ```python
 class ChatEngine:
     def __init__(self, retriever):
-        self.chat_history = []
+        self.retriever = retriever
+        self.params = SamplingParams(...)
 
     def ask_question(self, question, llm):
         question = "[INST]" + question + "[/INST]"
-        results = self.retriever.best_docs(question)
+        results = self.retriever.best_docs(question) # get most relevant docs
         document = [doc.text for doc, sc in results]
-
-        self.chat_history.append(ChatMessage(role=MessageRole.USER, content=f"Question: {question}"))
-        self.chat_history.append(ChatMessage(role=MessageRole.ASSISTANT, content=f"Document: {document}"))
-
-        response = llm.chat(self.chat_history)
-        return response.message.content
+        chat_history = SYSTEM_PROMPT + "\n\n" + f"Question: {question}\n\nDocument: {document}"
+        response = llm.generate(chat_history, self.params) # ask llm
+        return response[0].outputs[0].text
 ```
 
 ### HybridRetriever Class
@@ -100,3 +93,7 @@ class HybridRetriever:
         top_results = self.retrieve(query)
         return [(Document(text=text), score) for text, score in top_results]
 ```
+
+---
+All code belongs to [Cihan Yalçın](https://www.linkedin.com/in/chanyalcin/)
+Huge thanks to [Josh Longenecker](https://www.linkedin.com/in/josh-longenecker-5a6902226/) for his assistance with multi-GPU configurations and example [notebook](https://github.com/jlonge4/gen_ai_utils/blob/main/vllm_vs_deepspeed.ipynb).
