@@ -91,7 +91,7 @@ def process_file(file):
         text = ""
         for paragraph in docx_document.paragraphs:
             text += paragraph.text + "\n"
-            logging.info("Processed DOCX file")
+        logging.info("Processed DOCX file")
 
     return [Document(text=text)]
 
@@ -167,7 +167,6 @@ if __name__ == '__main__':
             logging.info(f"Processing file with question: {question}")
             
             response = process_and_respond(file_path, question)
-            logging.info(f"Response generated: {response}")
             
             os.remove(file_path)  # Clean up the uploaded file after processing
             logging.info(f"File {file_path} removed")
@@ -177,6 +176,4 @@ if __name__ == '__main__':
             #response #jsonify({'response': response})
 
     logging.info("Starting Flask app")
-
-    
     app.run(host='0.0.0.0', port=5000)
